@@ -1,8 +1,15 @@
 :root {
     --bg-color: #2C2C2C;
     --grey: #545454;
+    --white: white;
+    --orange:  #EB6536;
 
     --border-radius-s: 8px;
     --border-radius-m: 12px;
     --border-radius-b: 16px;
+
+    --buttons-font-sz: 25px;
+
+    --number-button-bg: #555555;
+    --sigh-button-bg: #404040;
 }

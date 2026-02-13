@@ -30,13 +30,116 @@ main {
         justify-content: center;
 
         .calculator-case {
-            width: 300px;
-            height: 450px;
+            width: 252px;
+            height: 400px;
+            padding: 12px;
             background-color: var(--bg-color);
             border: 2px solid var(--grey);
             border-radius: var(--border-radius-b);
             -webkit-box-shadow: 0 0 11px -5px #000000;
             box-shadow: 0 0 11px -5px #000000;
+
+            .screen-panel {
+
+                .screen {
+                    background-color: white;
+                    padding: 5px;
+                    font-size: 32px;
+                    text-align: right;
+                    border-radius: var(--border-radius-s);
+                }
+            }
+
+            .keyboard-panel {
+                margin-top: 35px;
+                display: grid;
+                gap: 8px;
+                grid-template-columns: repeat(4, 50px);
+                grid-template-rows: repeat(5, 50px);
+                grid-template-areas:
+                    "numberC   .......   .......        .......      "
+                    "number7   number8        number9      number-minus"
+                    "number4   number5        number6      number-divide"
+                    "number1   number2        number3      number-multiple"
+                    "number0   number-dot     number-equal number-plus";
+
+                .number1 {
+                    grid-area: number1;
+                }
+                .number2 {
+                    grid-area: number2;
+                }
+                .number3 {
+                    grid-area: number3;
+                }
+                .number4 {
+                    grid-area: number4;
+                }
+                .number5 {
+                    grid-area: number5;
+                }
+                .number6 {
+                    grid-area: number6;
+                }
+                .number7 {
+                    grid-area: number7;
+                }
+                .number8 {
+                    grid-area: number8;
+                }
+                .number9 {
+                    grid-area: number9;
+                }
+                .number0 {
+                    grid-area: number0;
+                }
+                .numberC {
+                    grid-area: numberC;
+                }
+                .number-plus {
+                    grid-area: number-plus;
+                }
+                .number-minus {
+                    grid-area: number-minus;
+                }
+                .number-divide {
+                    grid-area: number-divide;
+                }
+                .number-multiple {
+                    grid-area: number-multiple;
+                }
+                .number-equal {
+                    grid-area: number-equal;
+                }
+                .number-dot {
+                    grid-area: number-dot;
+                }
+
+                .button {
+                    border-radius: var(--border-radius-s);
+
+                }
+
+                .number0, .number1, .number2, .number3,
+                .number4, .number5,.number6, .number7,
+                .number8, .number9, .number0, .numberC, .number-equal {
+                    background-color: var(--number-button-bg);
+                    color: var(--white);
+                    font-size: var(--buttons-font-sz);
+                }
+
+                .numberC, .number-equal {
+                    background-color: var(--orange);
+                    color: var(--white);
+                }
+
+                .number-plus, .number-minus, .number-divide,
+                .number-multiple, .number-dot {
+                    background-color: var(--sigh-button-bg);
+                    color: var(--white);
+                    font-size: var(--buttons-font-sz);
+                }
+            }
         }
     }
 }
