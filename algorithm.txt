@@ -1,0 +1,34 @@
+
+// number pressed
+INPUT digit
+
+IF currentValue == '0' THEN
+    currentValue = digit
+ELSE
+    currentValue += digit
+PRINT currentValue
+
+INPUT operator
+// operator pressed
+//scenatio B
+IF operator != '' AND currentValue != '' THEN
+    SET previousValue = CALC(previousValue, operator, currentValue)
+    SET operator
+    SET currentValue = ''
+    PRINT previousValue
+
+//scenario A
+ELSE IF currentValue != '' THEN
+    SET previousValue = currentValue
+    SET operator
+    SET currentValue = ''
+
+//equal pressed
+IF previousValue != '' AND operator != '' AND currentValue != '' THEN
+    SET currentValue = CALC(previousValue, operator, currentValue)
+    SET operator = ''
+    SET previousValue = ''
+    PRINT currentValue
+
+
+
