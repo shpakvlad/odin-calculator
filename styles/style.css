@@ -6,6 +6,7 @@
 
 body, html {
     min-height: 100vh;
+    background-color: var(--grey);
 }
 
 body {
