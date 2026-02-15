@@ -25,7 +25,7 @@ keyboardPanel.addEventListener("click", (e) => {
         case "-":
         case "×":
         case "÷":
-            console.log('operator');
+            console.log("operator");
             break;
         case "=":
             console.log('equal');
@@ -41,3 +41,19 @@ keyboardPanel.addEventListener("click", (e) => {
             break;
     }
 });
+
+function calculate(currentValue, operator, previousValue) {
+    let currValue = Number(currentValue);
+    let prevValue = Number(previousValue);
+
+    switch (operator) {
+        case "+":
+            return currValue + prevValue;
+        case "-":
+            return currValue - prevValue;
+        case "×":
+            return currValue * prevValue;
+        case "÷":
+            return currValue / prevValue;
+    }
+}
