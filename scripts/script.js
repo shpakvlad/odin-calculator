@@ -1,12 +1,13 @@
+let currentValue = "0";
+let previousValue = "";
+let operator = "";
+let isFinished = false;
 
-let currentValue = null;
-let previousValue = null;
-let operator = null;
-
+let screen = document.querySelector(".screen");
 let keyboardPanel = document.querySelector(".keyboard-panel");
 
 keyboardPanel.addEventListener("click", (e) => {
-   let button = e.target.textContent.trim();
+    let button = e.target.textContent.trim();
 
     switch (button) {
         case "0":
@@ -18,23 +19,100 @@ keyboardPanel.addEventListener("click", (e) => {
         case "6":
         case "7":
         case "8":
-        case "9":
-            console.log('digit');
+        case "9": {
+            if (isFinished) {
+                currentValue = button;
+                isFinished = false;
+            } else {
+                if (currentValue === "0") {
+                    currentValue = button;
+                } else {
+                    currentValue += button;
+                }
+            }
+            updateScreen();
+        }
             break;
         case "+":
-        case "-":
+        case "–":
         case "×":
         case "÷":
-            console.log("operator");
+            // 1. Если мы ввели первое число и нажали оператор впервые
+            if (currentValue !== "" && previousValue === "") {
+                previousValue = currentValue;
+                operator = button;
+                currentValue = "";
+            }
+            // 2. Если мы передумали и хотим сменить оператор (currentValue уже очищено)
+            else if (currentValue === "" && previousValue !== "") {
+                operator = button; // Просто перезаписываем знак
+            }
+            // 3. Если мы уже ввели второе число и нажали оператор (цепочка вычислений: 5 + 5 [+])
+            else if (currentValue !== "" && previousValue !== "") {
+                previousValue = calculate(previousValue, operator, currentValue);
+                operator = button;
+                currentValue = "";
+            }
+
+            updateScreen();
             break;
         case "=":
-            console.log('equal');
+            if (previousValue !== "" && operator !== "" && currentValue !== "") {
+                currentValue = calculate(previousValue, operator, currentValue);
+                operator = "";
+                previousValue = "";
+                isFinished = true;
+                updateScreen();
+            }
             break;
         case "." :
-            console.log("dot");
+            // 1. Если мы только что закончили предыдущий расчет, начинаем заново с "0."
+            if (isFinished) {
+                currentValue = "0.";
+                isFinished = false;
+            }
+            // 2. Если точки еще нет в текущем числе
+            else if (!currentValue.includes(".")) {
+                // Если currentValue пустое (например, после нажатия оператора), делаем "0."
+                if (currentValue === "" || currentValue === "0") {
+                    currentValue = "0.";
+                } else {
+                    // Иначе просто приклеиваем точку в конец
+                    currentValue += ".";
+                }
+            }
+            // 3. Если точка уже есть — ничего не делаем (пропускаем)
+
+            updateScreen();
             break;
         case "C":
-            console.log("clear");
+            currentValue = "0";
+            operator = "";
+            previousValue = "";
+            updateScreen();
+            break;
+        case "←":
+            // 1. Если мы вводим второе число (или первое) и оно не пустое
+            if (currentValue !== "" && currentValue !== "0") {
+                currentValue = currentValue.slice(0, -1);
+
+                // Если после стирания стало пусто, мы НЕ всегда ставим "0"
+                if (currentValue === "") {
+                    // Если оператора нет, значит мы стирали единственное число -> ставим "0"
+                    if (operator === "") {
+                        currentValue = "0";
+                    }
+                    // Если оператор есть, оставляем currentValue пустым,
+                    // чтобы экран показал только "54 +"
+                }
+            }
+            // 2. Если currentValue уже пустое, но есть оператор — стираем оператор
+            else if (operator !== "") {
+                operator = "";
+                currentValue = previousValue;
+                previousValue = "";
+            }
+            updateScreen();
             break;
         default:
             console.log("unknown");
@@ -43,17 +121,39 @@ keyboardPanel.addEventListener("click", (e) => {
 });
 
 function calculate(currentValue, operator, previousValue) {
-    let currValue = Number(currentValue);
-    let prevValue = Number(previousValue);
+// Превращаем строки в числа для математики (Аксиома!)
+    const num1 = parseFloat(currentValue);
+    const num2 = parseFloat(previousValue);
+    let result;
 
     switch (operator) {
-        case "+":
-            return currValue + prevValue;
-        case "-":
-            return currValue - prevValue;
-        case "×":
-            return currValue * prevValue;
+        case "+": result = num1 + num2; break;
+        case "–": result = num1 - num2; break;
+        case "×": result = num1 * num2; break;
         case "÷":
-            return currValue / prevValue;
+            if (num2 === 0) return "Error";
+            result = num1 / num2;
+            break;
+        default: return previousValue;
+    }
+
+    // Округляем до 6 знаков, а затем Number() уберет лишние нули в конце
+    // Например: 5.300000 превратится в 5.3
+    return Number(result.toFixed(6)).toString();
+}
+
+function updateScreen() {
+    // Если есть оператор, показываем всю конструкцию
+    if (operator && previousValue !== null) {
+        screen.textContent = `${previousValue} ${operator} ${currentValue}`;
+    } else {
+        // Иначе показываем только то, что вводим сейчас
+        // Если currentValue пустое, показываем 0
+        screen.textContent = currentValue || "0";
     }
 }
+
+//TODO: добавить вводи отрицательных чисел
+//TODO: перевести комментарии
+//FIXME: нажатие + когда на экране ничего нет
+//TODO: клавиатура

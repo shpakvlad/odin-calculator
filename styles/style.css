@@ -32,7 +32,7 @@ main {
 
         .calculator-case {
             width: 252px;
-            height: 400px;
+            min-height: 400px;
             padding: 12px;
             background-color: var(--bg-color);
             border: 2px solid var(--grey);
@@ -41,7 +41,6 @@ main {
             box-shadow: 0 0 11px -5px #000000;
 
             .screen-panel {
-
                 .screen {
                     background-color: white;
                     padding: 5px;
@@ -58,7 +57,7 @@ main {
                 grid-template-columns: repeat(4, 50px);
                 grid-template-rows: repeat(5, 50px);
                 grid-template-areas:
-                    "numberC   .......   .......        .......      "
+                    "numberC   .......        .......      number-backspace"
                     "number7   number8        number9      number-minus"
                     "number4   number5        number6      number-divide"
                     "number1   number2        number3      number-multiple"
@@ -116,6 +115,10 @@ main {
                     grid-area: number-dot;
                 }
 
+                .number-backspace {
+                    grid-area: number-backspace;
+                }
+
                 .button {
                     border-radius: var(--border-radius-s);
 
@@ -123,7 +126,7 @@ main {
 
                 .number0, .number1, .number2, .number3,
                 .number4, .number5,.number6, .number7,
-                .number8, .number9, .number0, .numberC, .number-equal {
+                .number8, .number9, .number0, .numberC, .number-equal, .number-backspace {
                     background-color: var(--number-button-bg);
                     color: var(--white);
                     font-size: var(--buttons-font-sz);
