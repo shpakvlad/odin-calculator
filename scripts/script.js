@@ -253,3 +253,8 @@ function updateScreen() {
         screen.textContent = currentValue || "0";
     }
 }
+
+/**
+ * @todo: Add precents
+ *
+ */
