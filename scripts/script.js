@@ -6,9 +6,40 @@ let isFinished = false;
 let screen = document.querySelector(".screen");
 let keyboardPanel = document.querySelector(".keyboard-panel");
 
-keyboardPanel.addEventListener("click", (e) => {
-    let button = e.target.textContent.trim();
+document.addEventListener('keydown', (e) => {
+    let key = e.key;
 
+    // 1. Приравниваем клавиши к символам в switch
+    if (key === "Enter") key = "=";
+    if (key === "Escape") key = "C";
+    if (key === "Backspace") key = "⟵";
+    if (key === ",") key = "."; // Для удобства, если кто-то нажмет запятую
+    if (key === "*") key = "×";
+    if (key === "-") key = "–";
+    if (key === "_") key = "±";
+    if (key === "/") {
+        e.preventDefault(); // Предотвращаем поиск по странице в браузере!!!
+        key = "÷";
+    }
+
+    // 2. Список разрешенных клавиш (чтобы калькулятор не реагировал на буквы)
+    const validKeys = [
+        "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+        "+", "-", "×", "÷", "=", ".", "⟵", "C", "&plusmn;", "±"
+    ];
+
+    // Если нажатая клавиша есть в списке — запускаем логику
+    if (validKeys.includes(key)) {
+        handleInput(key);
+    }
+});
+
+keyboardPanel.addEventListener("click", (e) => {
+    if (!e.target.classList.contains('button')) return; // проверка, что кликнули по кнопке
+    handleInput(e.target.textContent.trim());
+});
+
+function handleInput(button) {
     switch (button) {
         case "0":
         case "1":
@@ -131,7 +162,7 @@ keyboardPanel.addEventListener("click", (e) => {
             console.log("unknown");
             break;
     }
-});
+}
 
 function calculate(currentValue, operator, previousValue) {
 // Превращаем строки в числа для математики (Аксиома!)
@@ -168,5 +199,3 @@ function updateScreen() {
 
 
 //TODO: перевести комментарии
-//FIXME: нажатие + когда на экране ничего нет
-//TODO: клавиатура
