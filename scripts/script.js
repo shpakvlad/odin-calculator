@@ -1,44 +1,87 @@
+/**
+ * @file The main script for the calculator.
+ * Implements calculation logic, DOM event handling, and keyboard support.
+ * @author Vladyslav Shpakov aka sendsay
+ * @version 1.0.0
+ */
+
+/**
+ * Current value, showing on screen
+ * @type {string}
+ */
 let currentValue = "0";
+
+/**
+ * Previous entering value
+ * @type {string}
+ */
 let previousValue = "";
+
+/**
+ * Stores selected mathematical operator
+ * @type {string}
+ */
 let operator = "";
+
+/**
+ * Flag indicating whether the current calculation is complete
+ * @type {boolean}
+ */
 let isFinished = false;
 
+/**
+ * Calculator display element
+ * @type {HTMLDivElement}
+ */
 let screen = document.querySelector(".screen");
+
+/**
+ * Calculator keyboard pad element
+ * @type {HTMLDivElement}
+ */
 let keyboardPanel = document.querySelector(".keyboard-panel");
 
 document.addEventListener('keydown', (e) => {
     let key = e.key;
 
-    // 1. Приравниваем клавиши к символам в switch
+    // Assign keys to symbols in switch
     if (key === "Enter") key = "=";
     if (key === "Escape") key = "C";
     if (key === "Backspace") key = "⟵";
-    if (key === ",") key = "."; // Для удобства, если кто-то нажмет запятую
+    if (key === ",") key = "."; // For convenience, if someone presses the comma key
     if (key === "*") key = "×";
     if (key === "-") key = "–";
     if (key === "_") key = "±";
     if (key === "/") {
-        e.preventDefault(); // Предотвращаем поиск по странице в браузере!!!
+        e.preventDefault(); // Prevent searching on the page in the browser!!!
         key = "÷";
     }
 
-    // 2. Список разрешенных клавиш (чтобы калькулятор не реагировал на буквы)
+    // List of permitted keys (so that the calculator does not respond to letters)
     const validKeys = [
         "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
-        "+", "-", "×", "÷", "=", ".", "⟵", "C", "&plusmn;", "±"
+        "+", "-", "×", "÷", "=", ".", "⟵", "C", "±"
     ];
 
-    // Если нажатая клавиша есть в списке — запускаем логику
+    // If the pressed key is in the list, we run the logic.
     if (validKeys.includes(key)) {
         handleInput(key);
     }
 });
 
 keyboardPanel.addEventListener("click", (e) => {
-    if (!e.target.classList.contains('button')) return; // проверка, что кликнули по кнопке
+    if (!e.target.classList.contains('button')) return; // check if button click
     handleInput(e.target.textContent.trim());
 });
 
+/**
+ * Central input processing logic.
+ * Processes button presses on the screen and keys on the keyboard,
+ * distributing actions between entering numbers, selecting an operation, or calculating.
+ *
+ * @param {string} button - Meaning of the pressed button (number, operator, or special character)
+ * @returns {void}
+ */
 function handleInput(button) {
     switch (button) {
         case "0":
@@ -68,17 +111,17 @@ function handleInput(button) {
         case "–":
         case "×":
         case "÷":
-            // 1. Если мы ввели первое число и нажали оператор впервые
+            // If we entered the first number and pressed the operator for the first time
             if (currentValue !== "" && previousValue === "") {
                 previousValue = currentValue;
                 operator = button;
                 currentValue = "";
             }
-            // 2. Если мы передумали и хотим сменить оператор (currentValue уже очищено)
+            // If we change our minds and want to switch operators (currentValue has already been cleared)
             else if (currentValue === "" && previousValue !== "") {
                 operator = button; // Просто перезаписываем знак
             }
-            // 3. Если мы уже ввели второе число и нажали оператор (цепочка вычислений: 5 + 5 [+])
+            // If we have already entered the second number and pressed the operator (calculation chain: 5 + 5 [+])
             else if (currentValue !== "" && previousValue !== "") {
                 previousValue = calculate(previousValue, operator, currentValue);
                 operator = button;
@@ -97,22 +140,22 @@ function handleInput(button) {
             }
             break;
         case "." :
-            // 1. Если мы только что закончили предыдущий расчет, начинаем заново с "0."
+            // If we have just finished the previous calculation, we start again from ‘0.’
             if (isFinished) {
                 currentValue = "0.";
                 isFinished = false;
             }
-            // 2. Если точки еще нет в текущем числе
+            // If the point is not yet in the current number
             else if (!currentValue.includes(".")) {
-                // Если currentValue пустое (например, после нажатия оператора), делаем "0."
+                // If currentValue is empty (for example, after pressing the operator), we set it to ‘0.’
                 if (currentValue === "" || currentValue === "0") {
                     currentValue = "0.";
                 } else {
-                    // Иначе просто приклеиваем точку в конец
+                    // Otherwise, just stick a dot at the end.
                     currentValue += ".";
                 }
             }
-            // 3. Если точка уже есть — ничего не делаем (пропускаем)
+            // If the point already exists, do nothing (skip).
             updateScreen();
             break;
         case "C":
@@ -120,23 +163,24 @@ function handleInput(button) {
             operator = "";
             previousValue = "";
             updateScreen();
+
             break;
         case "⟵":
-            // 1. Если мы вводим второе число (или первое) и оно не пустое
+            // If we enter the second number (or the first) and it is not empty
             if (currentValue !== "" && currentValue !== "0") {
                 currentValue = currentValue.slice(0, -1);
 
-                // Если после стирания стало пусто, мы НЕ всегда ставим "0"
+                // If it is empty after deletion, we do NOT always put ‘0’.
                 if (currentValue === "") {
-                    // Если оператора нет, значит мы стирали единственное число -> ставим "0"
+                    // If there is no operator, it means we deleted the singular form -> we put ‘0’
                     if (operator === "") {
                         currentValue = "0";
                     }
-                    // Если оператор есть, оставляем currentValue пустым,
-                    // чтобы экран показал только "54 +"
+                    // If there is an operator,
+                    // //leave currentValue empty so that the screen only shows ‘54 +’
                 }
             }
-            // 2. Если currentValue уже пустое, но есть оператор — стираем оператор
+            // If currentValue is already empty, but there is an operator, we delete the operator.
             else if (operator !== "") {
                 operator = "";
                 currentValue = previousValue;
@@ -147,25 +191,33 @@ function handleInput(button) {
         case "±":
             if (currentValue !== "0" && currentValue !== "") {
                 if (currentValue.startsWith("-")) {
-                    // Если есть минус — отрезаем его (берем всё со второго символа)
+                    // If there is a minus sign,
+                    // we cut it off (taking everything from the second character onwards).
                     currentValue = currentValue.slice(1);
                 } else {
-                    // Если нет минуса — приклеиваем его в начало
+                    // If there is no minus sign, we stick it at the beginning.
                     currentValue = "-" + currentValue;
                 }
             }
             updateScreen();
             break;
-
-
         default:
             console.log("unknown");
             break;
     }
 }
 
+/**
+ * Calculate operation between two numbers
+ * Call when user press = button or have all data for make calculation (exm. 5+6)
+ *
+ * @param {string} currentValue - First number (operand A)
+ * @param {string} operator - Operation sign (+, -, *, /)
+ * @param {string} previousValue - Second number (operand B).
+ * @returns {string} Result calculation
+ */
 function calculate(currentValue, operator, previousValue) {
-// Превращаем строки в числа для математики (Аксиома!)
+// Converting strings into numbers for mathematics (Axiom!)
     const num1 = parseFloat(currentValue);
     const num2 = parseFloat(previousValue);
     let result;
@@ -181,21 +233,23 @@ function calculate(currentValue, operator, previousValue) {
         default: return previousValue;
     }
 
-    // Округляем до 6 знаков, а затем Number() уберет лишние нули в конце
-    // Например: 5.300000 превратится в 5.3
+    // Round to 6 digits, and then Number() will remove the extra zeros at the end.
+    // For example: 5.300000 will become 5.3.
     return Number(result.toFixed(6)).toString();
 }
 
+/**
+ * Update screen data
+ *
+ * @returns {void}
+ */
 function updateScreen() {
-    // Если есть оператор, показываем всю конструкцию
-    if (operator && previousValue !== null) {
+    // If there is an operator, we show the entire structure.
+    if (operator && previousValue !== "") {
         screen.textContent = `${previousValue} ${operator} ${currentValue}`;
     } else {
-        // Иначе показываем только то, что вводим сейчас
-        // Если currentValue пустое, показываем 0
+        // Otherwise, we only show what we are entering now.
+        // If currentValue is empty, we show 0.
         screen.textContent = currentValue || "0";
     }
 }
-
-
-//TODO: перевести комментарии
