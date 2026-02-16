@@ -82,7 +82,6 @@ keyboardPanel.addEventListener("click", (e) => {
                 }
             }
             // 3. Если точка уже есть — ничего не делаем (пропускаем)
-
             updateScreen();
             break;
         case "C":
@@ -91,7 +90,7 @@ keyboardPanel.addEventListener("click", (e) => {
             previousValue = "";
             updateScreen();
             break;
-        case "←":
+        case "⟵":
             // 1. Если мы вводим второе число (или первое) и оно не пустое
             if (currentValue !== "" && currentValue !== "0") {
                 currentValue = currentValue.slice(0, -1);
@@ -114,6 +113,20 @@ keyboardPanel.addEventListener("click", (e) => {
             }
             updateScreen();
             break;
+        case "±":
+            if (currentValue !== "0" && currentValue !== "") {
+                if (currentValue.startsWith("-")) {
+                    // Если есть минус — отрезаем его (берем всё со второго символа)
+                    currentValue = currentValue.slice(1);
+                } else {
+                    // Если нет минуса — приклеиваем его в начало
+                    currentValue = "-" + currentValue;
+                }
+            }
+            updateScreen();
+            break;
+
+
         default:
             console.log("unknown");
             break;
@@ -153,7 +166,7 @@ function updateScreen() {
     }
 }
 
-//TODO: добавить вводи отрицательных чисел
+
 //TODO: перевести комментарии
 //FIXME: нажатие + когда на экране ничего нет
 //TODO: клавиатура

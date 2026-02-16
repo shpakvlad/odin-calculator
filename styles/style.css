@@ -57,11 +57,11 @@ main {
                 grid-template-columns: repeat(4, 50px);
                 grid-template-rows: repeat(5, 50px);
                 grid-template-areas:
-                    "numberC   .......        .......      number-backspace"
-                    "number7   number8        number9      number-minus"
-                    "number4   number5        number6      number-divide"
-                    "number1   number2        number3      number-multiple"
-                    "number0   number-dot     number-equal number-plus";
+                    "numberC   number-backspace ......              number-minus"
+                    "number7   number8          number9             number-divide"
+                    "number4   number5          number6             number-multiple"
+                    "number1   number2          number3             number-plus"
+                    "number0   number-dot       number-minusplus    number-equal";
 
                 .number1 {
                     grid-area: number1;
@@ -114,9 +114,11 @@ main {
                 .number-dot {
                     grid-area: number-dot;
                 }
-
                 .number-backspace {
                     grid-area: number-backspace;
+                }
+                .number-minusplus {
+                    grid-area: number-minusplus;
                 }
 
                 .button {
@@ -126,7 +128,7 @@ main {
 
                 .number0, .number1, .number2, .number3,
                 .number4, .number5,.number6, .number7,
-                .number8, .number9, .number0, .numberC, .number-equal, .number-backspace {
+                .number8, .number9, .number0, .numberC, .number-equal{
                     background-color: var(--number-button-bg);
                     color: var(--white);
                     font-size: var(--buttons-font-sz);
@@ -138,7 +140,7 @@ main {
                 }
 
                 .number-plus, .number-minus, .number-divide,
-                .number-multiple, .number-dot {
+                .number-multiple, .number-dot, .number-backspace , .number-minusplus {
                     background-color: var(--sigh-button-bg);
                     color: var(--white);
                     font-size: var(--buttons-font-sz);
